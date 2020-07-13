@@ -1,6 +1,5 @@
 def add_time(start, duration, weekday=None):
     hour_array = start.split()
-    start_time = hour_array[0]
     am_pm = hour_array[1]
     start_hours = int(hour_array[0].split(":")[0])
     start_mins = int(hour_array[0].split(":")[1])
@@ -17,28 +16,17 @@ def add_time(start, duration, weekday=None):
         "sunday": 7
     }
 
-    if(duration_hours >= 24):
-        num_days = int(duration_hours/24)
-        additional_hours = duration_hours%24
-    else:
-        num_days = 0
-        additional_hours = duration_hours
-
-    if(duration_mins >= 60):
-        additional_hours += duration_mins/60
-        additional_mins = duration_mins%60
-    else:
-        additional_mins = duration_mins
+    num_days = int(duration_hours/24)
+    additional_hours = duration_hours%24
+    additional_hours += int(duration_mins/60)
+    additional_mins = duration_mins%60
 
     end_hours = start_hours + additional_hours
     end_mins = start_mins + additional_mins
 
     if(end_mins >= 60):
         end_hours += 1
-        if(end_mins > 60):
-            end_mins -= 60
-        else:
-            end_mins = 0
+        end_mins -= 60
 
     if(end_hours >= 12):
         if(am_pm == 'PM'):
@@ -49,8 +37,8 @@ def add_time(start, duration, weekday=None):
         if(end_hours > 12):
             end_hours -= 12
 
-    if(end_mins < 10):
-        end_mins = "0"+str(end_mins)
+    end_mins = format(end_mins, '02')
+    end_hours = str(end_hours)
 
     if(num_days == 1):
         days_message = " (next day)"
@@ -62,19 +50,16 @@ def add_time(start, duration, weekday=None):
             weekday_num = week[weekday.lower()]
             key_list = list(week.keys())
             val_list = list(week.values())
-            if(num_days >= 7):
-                add_weekday = num_days%7
-            else:
-                add_weekday = num_days
+            add_weekday = num_days%7
             if((weekday_num+add_weekday) > 7):
                 end_weekday = key_list[val_list.index(weekday_num+add_weekday-7)]
             else:
                 end_weekday = key_list[val_list.index(weekday_num+add_weekday)]
-            new_time = str(end_hours)+":"+str(end_mins)+" "+am_pm+", "+end_weekday.capitalize()+days_message
+            new_time = end_hours+":"+end_mins+" "+am_pm+", "+end_weekday.capitalize()+days_message
             return new_time
         else:
             return "Error: wrong day name"
 
-    new_time = str(end_hours)+":"+str(end_mins)+" "+am_pm+days_message
+    new_time = str(end_hours)+":"+end_mins+" "+am_pm+days_message
 
     return new_time

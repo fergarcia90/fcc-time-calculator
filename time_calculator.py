@@ -1,4 +1,4 @@
-def add_time(start, duration):
+def add_time(start, duration, weekday=None):
     hour_array = start.split()
     start_time = hour_array[0]
     am_pm = hour_array[1]
@@ -7,6 +7,15 @@ def add_time(start, duration):
     duration_hours = int(duration.split(":")[0])
     duration_mins = int(duration.split(":")[1])
     days_message = ""
+    week = {
+        "monday": 1,
+        "tuesday": 2,
+        "wednesday": 3,
+        "thursday": 4,
+        "friday": 5,
+        "saturday": 6,
+        "sunday": 7
+    }
 
     if(duration_hours >= 24):
         num_days = int(duration_hours/24)
@@ -47,6 +56,24 @@ def add_time(start, duration):
         days_message = " (next day)"
     if(num_days > 1):
         days_message = " ("+str(num_days)+" days later)"
+
+    if(weekday != None):
+        if(weekday.lower() in week):
+            weekday_num = week[weekday.lower()]
+            key_list = list(week.keys())
+            val_list = list(week.values())
+            if(num_days >= 7):
+                add_weekday = num_days%7
+            else:
+                add_weekday = num_days
+            if((weekday_num+add_weekday) > 7):
+                end_weekday = key_list[val_list.index(weekday_num+add_weekday-7)]
+            else:
+                end_weekday = key_list[val_list.index(weekday_num+add_weekday)]
+            new_time = str(end_hours)+":"+str(end_mins)+" "+am_pm+", "+end_weekday.capitalize()+days_message
+            return new_time
+        else:
+            return "Error: wrong day name"
 
     new_time = str(end_hours)+":"+str(end_mins)+" "+am_pm+days_message
 
